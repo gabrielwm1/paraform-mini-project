@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import styles from "./layout.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={`${GeistMono.variable} ${GeistSans.variable}  ${styles.wrapper}`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
