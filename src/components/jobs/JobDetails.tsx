@@ -3,38 +3,20 @@ import { Job } from "@/types/jobs";
 import { ApplicationForm } from "../candidates";
 import { Text } from "../common";
 import { formatCurrency } from "@/lib/utils";
+import { JobPost } from "@/types/jobPost";
 
 interface JobDetailProps {
-  job: Job;
+  jobPost: JobPost;
 }
-export function JobDetails({ job }: JobDetailProps) {
-  console.log(job);
+export function JobDetails({ jobPost }: JobDetailProps) {
   return (
-    <div className="my-10 space-y-8 ">
-      <div className="bg-muted p-4 rounded-lg flex flex-col space-y-2">
-        <Text size="xl" font="mono">
-          {job.name}
-        </Text>
-        <div className="flex space-x-2">
-          <Text>Full Time</Text>
-          <Text>•</Text>
-          <Text>{job.offices[0].name}</Text>
-        </div>
-        <div>
-          <Text>Range</Text>
-          <Text>
-            {formatCurrency(job.custom_fields.salary_range.min_value)} -{" "}
-            {formatCurrency(job.custom_fields.salary_range.max_value)}
-          </Text>
-        </div>
-      </div>
+    <>
       <div className="flex flex-col space-y-2">
         <Text size="xl" weight="bold">
           About this Role
         </Text>
         <Text size="base" weight="light">
-          We are looking for the next innovator to join our team at Gabe&apos;s
-          Amazing Kitchen
+          {jobPost?.content}
         </Text>
       </div>
 
@@ -80,11 +62,11 @@ export function JobDetails({ job }: JobDetailProps) {
       </div>
       <div className="max-w-lg">
         <ApplicationForm
-          job_id={String(job.id)}
+          job_id={String(jobPost?.id)}
           onSuccess={() => console.log("test")}
           onClose={() => console.log("test")}
         />
       </div>
-    </div>
+    </>
   );
 }

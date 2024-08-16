@@ -1,4 +1,4 @@
-export async function getJobPostById(id: string) {
+export async function getJobById(id: string) {
   const myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
@@ -13,7 +13,7 @@ export async function getJobPostById(id: string) {
 
   try {
     const response = await fetch(
-      `https://harvest.greenhouse.io/v1/jobs/${id}/job_posts`,
+      `https://harvest.greenhouse.io/v1/jobs/${id}`,
       requestOptions
     );
     if (!response.ok) {
