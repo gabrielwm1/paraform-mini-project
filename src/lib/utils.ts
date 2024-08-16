@@ -24,3 +24,10 @@ export const convertFileToBase64 = (file: File): Promise<string> => {
     reader.readAsDataURL(file); // Read the file as a Data URL to get Base64 encoding
   });
 };
+
+export function formatCurrency(amount: string): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(parseInt(amount));
+}
