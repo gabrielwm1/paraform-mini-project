@@ -1,4 +1,4 @@
 // this page renders all applications
-export function Page() {
+export default async function Page() {
   return <div>Applications</div>;
 }

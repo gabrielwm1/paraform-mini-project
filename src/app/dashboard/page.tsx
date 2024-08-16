@@ -3,7 +3,7 @@
 import { NavigationCard, Text } from "@/components/common";
 import Link from "next/link";
 
-export function Page() {
+export default async function Page() {
   return (
     <div>
       <Text>Welcome to the Employee Dashboard</Text>
