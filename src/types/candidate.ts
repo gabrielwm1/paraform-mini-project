@@ -17,6 +17,7 @@ export type AddCandidatePayload = {
   first_name: string;
   last_name: string;
   company?: string;
+  phone_numbers?: { value: string; type: string }[];
   title?: string;
   email_addresses?: EmailAddress[];
   website_addresses?: WebsiteAddress[];
