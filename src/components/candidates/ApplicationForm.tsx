@@ -21,7 +21,6 @@ import { z } from "zod";
 
 interface ApplicationFormProps {
   onSuccess: () => void;
-  onClose: () => void;
   jobPost: JobPost;
 }
 
@@ -36,7 +35,7 @@ const formSchema = z.object({
 
 export function ApplicationForm({
   onSuccess,
-  onClose,
+
   jobPost,
 }: ApplicationFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({

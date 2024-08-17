@@ -12,7 +12,7 @@ export default async function JobPage({
 }: {
   params: { jobId: string };
 }) {
-  // we fetch both job and job post so we can get salary info
+  //    we fetch both job and job post so we can get salary info
   //   job post to job is 1:many, but assume 1:1 for now
   const jobPosts: JobPost[] = await getJobPostById(jobId);
 

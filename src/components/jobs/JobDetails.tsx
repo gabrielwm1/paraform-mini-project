@@ -65,8 +65,8 @@ export function JobDetails({ jobPost }: JobDetailProps) {
       <div className="max-w-lg">
         <ApplicationForm
           jobPost={jobPost}
+          //   todo: use these callbacks to display a toast component with nice success message
           onSuccess={() => console.log("test")}
-          onClose={() => console.log("test")}
         />
       </div>
     </>
