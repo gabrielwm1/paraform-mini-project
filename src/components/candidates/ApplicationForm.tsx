@@ -20,27 +20,57 @@ import { createCandidate } from "@/handlers/createCandidate";
 import { addAttachemnt } from "@/handlers/addAttachement";
 import { Attachment } from "@/types/attachment";
 import { convertFileToBase64 } from "@/lib/utils";
+import { JobPost } from "@/types/jobPost";
+import { Question } from "@/types/application_question";
 
-const formSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  email: z.string().email(),
-  linkedin_url: z.string().url(),
-  github_profile_url: z.string().url(),
-  portfolio_url: z.string(),
-  answer: z.string(),
-  resume: z.any(),
-});
+interface ApplicationFormProps {
+  onSuccess: () => void;
+  onClose: () => void;
+  job_id: string;
+  questions: Pick<JobPost, "questions">["questions"];
+}
+
+const generateFormSchema = (questions: Question[]) => {
+  const shape: Record<string, z.ZodTypeAny> = {};
+
+  questions.forEach((question) => {
+    if (question.type === "short_text") {
+      shape[question.name] = question.required
+        ? z.string({ message: `The ${question.label} field is required.` })
+        : z.string().optional();
+    } else if (question.type === "attachment") {
+      shape[question.name] = question.required
+        ? z.any({ message: `The ${question.label} field is required.` })
+        : z.any().optional();
+    }
+  });
+
+  return z.object(shape);
+};
+
+// const formSchema = z.object({
+//   first_name: z.string(),
+//   last_name: z.string(),
+//   email: z.string().email(),
+//   linkedin_url: z.string().url(),
+//   github_profile_url: z.string().url(),
+//   portfolio_url: z.string(),
+//   answer: z.string(),
+//   resume: z.any(),
+// });
 
 export function ApplicationForm({
   onSuccess,
   onClose,
-  job_id,
+  jobPost,
 }: {
   onSuccess: () => void;
   onClose: () => void;
-  job_id: string;
+  jobPost: JobPost;
 }) {
+  const questions: Question[] = jobPost.questions;
+  const formSchema = generateFormSchema(questions);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,9 +79,9 @@ export function ApplicationForm({
     },
   });
 
+  //   we need to construct a ts interface out of the questions property within jobPost for the react hook form validation
+
   //   ideally need to be fetchign the job posting by ID here and getting the questions, for now hardcoded
-  const jobQuestion =
-    "Can you provide an example of a dish where your intuition played a crucial role?";
 
   const resumeFileRef = form.register("resume");
 
@@ -59,6 +89,7 @@ export function ApplicationForm({
     // todo: we need to create the the candidate with application nested inside of it
     // retrieve the application_id for this candidate
     // we can then Add Attachment to application
+    //we need to programmatically build this payload by looking at the form
     const candidatePayload: AddCandidatePayload = {
       first_name: values.first_name,
       last_name: values.last_name,
@@ -70,8 +101,8 @@ export function ApplicationForm({
       ],
       applications: [
         {
-          job_id: parseInt(job_id),
-          answers: [{ question: jobQuestion, answer: values.answer }],
+          job_id: jobPost.job_id,
+          answers: [{ question: "test", answer: values.answer }],
         },
       ],
     };
@@ -104,7 +135,35 @@ export function ApplicationForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
+        {questions.map((question, index) => (
+          <FormField
+            key={index}
+            control={form.control}
+            name={question.name}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{question.label}</FormLabel>
+                <FormControl>
+                  {question.type === "short_text" ? (
+                    <Input
+                      placeholder={question.description || ""}
+                      {...field}
+                      type={question.type}
+                    />
+                  ) : question.type === "attachment" ? (
+                    <Input
+                      placeholder={question.description || ""}
+                      {...field}
+                      type="file"
+                    />
+                  ) : null}
+                </FormControl>
+                {/* <FormMessage>{errors[question.name]?.message}</FormMessage> */}
+              </FormItem>
+            )}
+          />
+        ))}
+        {/* <FormField
           control={form.control}
           name="resume"
           render={({ field }) => (
@@ -221,7 +280,7 @@ export function ApplicationForm({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button type="submit">Submit</Button>
       </form>
     </Form>

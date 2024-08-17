@@ -1,14 +1,15 @@
 "use client";
-import { Job } from "@/types/jobs";
 import { ApplicationForm } from "../candidates";
 import { Text } from "../common";
-import { formatCurrency } from "@/lib/utils";
 import { JobPost } from "@/types/jobPost";
 
 interface JobDetailProps {
   jobPost: JobPost;
 }
 export function JobDetails({ jobPost }: JobDetailProps) {
+  if (!jobPost) {
+    return <Text>No Job Post Available for this Role</Text>;
+  }
   return (
     <>
       <div className="flex flex-col space-y-2">
@@ -60,9 +61,10 @@ export function JobDetails({ jobPost }: JobDetailProps) {
           Apply for this role
         </Text>
       </div>
+
       <div className="max-w-lg">
         <ApplicationForm
-          job_id={String(jobPost?.id)}
+          jobPost={jobPost}
           onSuccess={() => console.log("test")}
           onClose={() => console.log("test")}
         />
